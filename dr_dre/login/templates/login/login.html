@@ -13,10 +13,11 @@
             {% csrf_token %}
             <fieldset class = 'form-group'>
                 <legend class = 'form-legend'>Welcome to Dr. Dre's Shop</legend>
-                {{form|crispy}}
+                {{form}}
             </fieldset>
             <div class = 'submission'>
                 <button class = 'login-button' type = 'submit'>Log In</button>
+                <a href = "#" class = 'forgot-password'>Forgot Password...</a>
             </div>
         </form>
     </body>
