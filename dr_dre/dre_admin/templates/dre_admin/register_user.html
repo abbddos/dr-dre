@@ -1,0 +1,39 @@
+{% extends "home/base.html"%}
+{% load crispy_forms_tags%}
+{% block content %}
+    <div class = "actionpage">
+        <form method = 'POST'>
+            {% csrf_token %}
+            <fieldset class = 'form-group'>
+                <legend class = 'legend-basic'>Join Today</legend>
+                {{form1|crispy}}
+                {{form2|crispy}}
+                <div class = 'form-group'>
+                    <button class = 'btn-active' type = 'submit'>Submit</button>
+                </div>
+            </fieldset>
+        </form>
+        <table>
+            <tr>
+                <th>ID:</th>
+                <th>First Name:</th>
+                <th>Last Name:</th>
+                <th>Username:</th>
+                <th>Email:</th>
+                <th>Active:</th>
+                <th>Role:</th>
+            </tr>
+            {% for p in profiles %}
+                <tr class = '{{p.user.is_active}}'>
+                    <td>{{p.user.id}}</td>
+                    <td>{{p.user.first_name}}</td>
+                    <td>{{p.user.last_name}}</td>
+                    <td>{{p.user.username}}</td>
+                    <td>{{p.user.email}}</td>
+                    <td>{{p.user.is_active}}</td>
+                    <td>{{p.role}}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}

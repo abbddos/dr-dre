@@ -103,7 +103,132 @@ body{
 
   .actionpage{
     margin-top: 2%;
-    margin-left: 2%;
+    margin: 2%;
     padding: 15px;
     width: 77%;
   }
+
+  .all-services{
+    margin-top: 5%;
+    margin-left: 18%;
+  }
+
+  .part-container{
+    width: 32%;
+    height: 50%;
+    float: left;
+    margin: 5px;
+    border: solid white; 
+    transition: all 0.1s ease-out;
+  }
+
+  .part-container:hover{
+    box-shadow:10px 5px 5px rgba(255, 206, 255, 0.836);
+    transition: all 0.1s ease-out;
+  }
+
+  .part-image{
+    width: 100%;
+    height: 75%;
+  }
+
+  form{
+    margin-top: 1%;
+    width: 50%;
+
+  }
+
+  .form-group{
+    padding: 5px;
+  }
+
+  .legend-basic{
+    color: rgb(100,0,100);
+    font-weight: bold;
+  }
+
+  input[type = text]{
+    width: 50%;
+    border: solid;
+    border-color: rgb(100,0,100);
+    border-width: 1px;
+    border-radius: 3px;
+  }
+
+  input[type = email]{
+    width: 50%;
+    border: solid;
+    border-color: rgb(100,0,100);
+    border-width: 1px;
+    border-radius: 3px;
+  }
+
+  select {
+    width: 50%;
+    border: solid;
+    border-color: rgb(100,0,100);
+    border-width: 1px;
+    border-radius: 3px;
+  }
+
+  .btn-active{
+    height: 35px;
+    width: 80px;
+    background-color: white;
+    color: rgb(100,0,100);
+    border: solid 1px rgb(100,0,100);
+    border-radius: 4px;
+    transition: all 0.1s ease-out;
+  }
+
+  .btn-active:hover{
+    background-color: rgb(100,0,100);
+    color: white;
+    border: solid 1px white;
+    transition: all 0.1s ease-out;
+  }
+
+  table{
+    width: 95%;
+    border: solid;
+    border-width: 1px;
+    border-color: rgb(253, 192, 255);
+    overflow: scroll;
+    margin-top: 1%;
+    margin-bottom: 2%;
+    
+  }
+
+  th{
+    width: auto;
+    background-color: rgb(100,0,100);
+    color: white;
+    text-align: left;
+    font-weight:normal;
+    padding: 5px;
+    border-bottom: solid 1px;
+  }
+
+  .False {
+    color: red;
+    text-align: left;
+  }
+
+tr{
+    border-bottom: solid;
+    border-width: 1px;
+    border-color: black;
+    background-color: white;
+}
+
+tr:hover{
+  background-color: rgb(224,224,224);
+}
+
+tr:nth-child(even){
+  background-color: #eee;
+}
+
+tr:nth-child(even):hover{
+  background-color: rgb(224,224,224);
+}
