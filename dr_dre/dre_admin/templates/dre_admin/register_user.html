@@ -2,17 +2,10 @@
 {% load crispy_forms_tags%}
 {% block content %}
     <div class = "actionpage">
-        <form method = 'POST'>
-            {% csrf_token %}
-            <fieldset class = 'form-group'>
-                <legend class = 'legend-basic'>Join Today</legend>
-                {{form1|crispy}}
-                {{form2|crispy}}
-                <div class = 'form-group'>
-                    <button class = 'btn-active' type = 'submit'>Submit</button>
-                </div>
-            </fieldset>
-        </form>
+        <div class="action-header">
+            <button class = 'btn-active' id = "create-user">Create new user</button>
+            <input type = "text" placeholder = "Search"id = 'srch' />
+        </div>
         <table>
             <tr>
                 <th>ID:</th>
@@ -24,7 +17,7 @@
                 <th>Role:</th>
             </tr>
             {% for p in profiles %}
-                <tr class = '{{p.user.is_active}}'>
+                <tr class = '{{p.user.is_active}} table-row' id = "{{p.user.id}}">
                     <td>{{p.user.id}}</td>
                     <td>{{p.user.first_name}}</td>
                     <td>{{p.user.last_name}}</td>
@@ -35,5 +28,69 @@
                 </tr>
             {% endfor %}
         </table>
+        <div class = 'messages-container'>
+            {% if messages %}
+                {% for message in messages %}
+                    <p class = "{{message.tags}}">{{message}}</p>
+                {% endfor %}
+            {% endif %}
+          </div>
+        <div id="myModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <form method = 'POST' id = "UserCreationForm">
+                    {% csrf_token %}
+                    <fieldset class = 'form-group'>
+                        <legend class = 'legend-basic' id = "users-legend">Create New User</legend>
+                        {{form1|crispy}}
+                        {{form2|crispy}}
+                        <div class = 'form-group'>
+                            <button class = 'btn-active' type = 'submit'>Submit</button>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
     </div>
+    <script>
+        $(document).ready(function(){
+            $('#srch').keyup(function(){
+                search_table($(this).val());
+            });
+
+            function search_table(value){
+                $('.table-row').each(function(){
+        
+                $(this).each(function(){
+                    if($(this).text().toLocaleLowerCase().indexOf(value.toLocaleLowerCase()) >= 0){ $(this).show();}
+                    else{$(this).hide();}
+                    });
+                });
+            }
+
+            $('#create-user').click(function(){
+                $('#myModal').show();
+            });
+
+            $('.table-row').click(function(){
+                $('#myModal').show();
+                $('#users-legend').text('Edit user');
+                var row_id = $(this).attr('id');
+                $('#UserCreationForm').attr('action', '/dre_admin/UpdateUser/'+row_id);
+                $.getJSON("/dre_admin/GetUserByID/" + row_id, function(data){
+                    $('#id_first_name').val(data.first_name);
+                    $('#id_last_name').val(data.last_name);
+                    $('#id_email').val(data.email);
+                    $('#id_is_active').attr('checked', data.is_active);
+                    $('id_role').prepend("<option value = '"+data.role+"' selected hidden>"+data.role+"</option>");
+                });
+            });
+
+            $('.close').click(function(){
+                $('#myModal').hide();
+                $('#users-legend').text('Create new user');
+                $('#UserCreationForm').attr('action', '/dre_admin/register')
+            });
+        });
+    </script>
 {% endblock %}
