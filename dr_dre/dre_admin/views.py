@@ -22,6 +22,7 @@ def NewName(newname):
     return New_User
 
 def register(request):
+    prf = Profile.objects.get(user__username = request.user.username)
     profiles = Profile.objects.all().order_by('user__id')
     if request.method == 'POST':
         form1 = UserRegisterForm(request.POST)
@@ -53,7 +54,8 @@ def register(request):
     context = {
             'profiles': profiles,
             'form1': form1,
-            'form2': form2
+            'form2': form2,
+            'prf': prf
         }
     return render(request, 'dre_admin/register_user.html', context)
 
@@ -84,6 +86,7 @@ def UpdateUser(request, uid):
 
 @login_required
 def profile(request, uid):
+    prf = Profile.objects.get(user__username = request.user.username)
     if request.method == 'POST':
         u_form = UserUpdateForm(request.POST)
         usr = User.objects.get(username = uid)
@@ -99,11 +102,12 @@ def profile(request, uid):
     else:
         u_form = UserUpdateForm()
         
-    context = {'u_form': u_form, 'uid': uid}
+    context = {'u_form': u_form, 'uid': uid, 'prf': prf}
     return render(request, 'dre_admin/profile.html', context)
 
 @login_required
 def change_password(request, uid):
+    prf = Profile.objects.get(user__username = request.user.username)
     if request.method == 'POST':
         form = PasswordChangeForm(request.user, request.POST)
         if form.is_valid():
@@ -118,7 +122,7 @@ def change_password(request, uid):
     else:
         form = PasswordChangeForm(request.user)
     return render(request, 'dre_admin/change_password.html', {
-        'form': form, 'uid': uid
+        'form': form, 'uid': uid, 'prf': prf
     })
 
 
