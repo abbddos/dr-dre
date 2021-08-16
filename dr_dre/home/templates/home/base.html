@@ -14,6 +14,7 @@
         <ul>
           <div class = 'left-stuff-container'>
             <li><a href="{% url 'home'%}">Home</a></li>
+            {% if prf.role == 'Admin'%}
             <li class = 'dropdown'><a href="#">Admin</a>
               <div class="dropdown-content">
                 <a href="#">Departments</a>
@@ -21,13 +22,14 @@
                 <a href="{% url 'register_user'%}">Users</a>
               </div>
             </li>
+            {% endif %}
             <li><a href="#">Jobs</a></li>
           </div>
           <div class = 'right-stuff-container'>
             <li class = 'dropdown'>
-              <a href="javascript:void(0)" class="dropbtn">{{user.username}} {{prf.role}}</a>
+              <a href="javascript:void(0)" class="dropbtn">{{user.username}} </a>
               <div class="dropdown-content">
-                <a href="{% url 'profile' %}">View Profile</a>
+                <a href="{% url 'profile' user.username %}">View Profile</a>
                 <a href="{% url 'logout' %}">Log out</a>
               </div>
             </li>

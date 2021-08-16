@@ -17,7 +17,7 @@
                 <th>Role:</th>
             </tr>
             {% for p in profiles %}
-                <tr class = '{{p.user.is_active}} table-row' id = "{{p.user.id}}">
+                <tr class = '{{p.user.is_active}} table-row' id = "{{p.user.username}}">
                     <td>{{p.user.id}}</td>
                     <td>{{p.user.first_name}}</td>
                     <td>{{p.user.last_name}}</td>
@@ -78,10 +78,10 @@
                 var row_id = $(this).attr('id');
                 $('#UserCreationForm').attr('action', '/dre_admin/UpdateUser/'+row_id);
                 $.getJSON("/dre_admin/GetUserByID/" + row_id, function(data){
-                    $('#id_first_name').val(data.first_name);
-                    $('#id_last_name').val(data.last_name);
-                    $('#id_email').val(data.email);
-                    $('#id_is_active').attr('checked', data.is_active);
+                    $('#id_first_name').val(data.user.first_name);
+                    $('#id_last_name').val(data.user.last_name);
+                    $('#id_email').val(data.user.email);
+                    $('#id_is_active').attr('checked', data.user.is_active);
                     $('id_role').prepend("<option value = '"+data.role+"' selected hidden>"+data.role+"</option>");
                 });
             });
@@ -90,6 +90,11 @@
                 $('#myModal').hide();
                 $('#users-legend').text('Create new user');
                 $('#UserCreationForm').attr('action', '/dre_admin/register')
+                $('#id_first_name').val("");
+                $('#id_last_name').val("");
+                $('#id_email').val("");
+                $('#id_is_active').attr('checked', 'ture');
+                $('id_role').prepend("<option value = 'User' selected hidden>User</option>");
             });
         });
     </script>

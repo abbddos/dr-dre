@@ -1,12 +1,15 @@
 from django.shortcuts import render, redirect
-from django.http import JsonResponse
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from .forms import  UserRegisterForm, UserProfileCreationForm
+from .forms import  UserRegisterForm, UserProfileCreationForm, UserUpdateForm
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
 from .models import Profile
 from datetime import datetime
-from django.contrib import messages
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .serializers import ProfileSerializer
 
 def NewName(newname):
     i = 1
@@ -17,8 +20,6 @@ def NewName(newname):
             New_User = newname + str(i)
             i += 1
     return New_User
-
-
 
 def register(request):
     profiles = Profile.objects.all().order_by('user__id')
@@ -58,8 +59,8 @@ def register(request):
 
 @login_required
 def UpdateUser(request, uid):
-    usr = User.objects.filter(id = uid).first()
-    prf = Profile.objects.filter(user__id = uid).first()
+    usr = User.objects.filter(username = uid).first()
+    prf = Profile.objects.filter(user__username = uid).first()
     if request.method == 'POST':
         form1 = UserRegisterForm(request.POST)
         form2 = UserProfileCreationForm(request.POST)
@@ -82,48 +83,60 @@ def UpdateUser(request, uid):
     return redirect('register_user')
 
 @login_required
-def GetAllUsers(request):
-    qry = Profile.objects.all()
-    data = []
-    for p in qry:
-        profile = dict()
-        profile["id"] = p.user.id
-        profile["first_name"] = p.user.first_name
-        profile["last_name"] = p.user.last_name
-        profile["username"] = p.user.username
-        profile["email"] = p.user.email
-        profile["is_active"] = p.user.is_active
-        profile["role"] = p.role
-        data.append(profile)
-    return JsonResponse({'data': data})
-
-@login_required
-def GetUserByID(response, uid):
-    p = Profile.objects.filter(user__id = uid).first()
-    profile = dict()
-    profile["id"] = p.user.id
-    profile["first_name"] = p.user.first_name
-    profile["last_name"] = p.user.last_name
-    profile["username"] = p.user.username
-    profile["email"] = p.user.email
-    profile["is_active"] = p.user.is_active
-    profile["role"] = p.role
-    return JsonResponse(profile)
-
-@login_required
-def profile(request):
-    """if request.method == 'POST':
-        u_form = UserUpdateForm(request.POST, instance = request.user)
-        p_form = ProfileUpdateForm(request.POST, request.FILES, instance = request.user.profile)
-        if u_form.is_valid() and p_form.is_valid():
-            u_form.save()
-            p_form.save()
-            messages.success(request, f'Your profile has been successfully updated :)')
-            return redirect('profile')
+def profile(request, uid):
+    if request.method == 'POST':
+        u_form = UserUpdateForm(request.POST)
+        usr = User.objects.get(username = uid)
+        if u_form.is_valid():
+            try:
+                usr.first_name = u_form.cleaned_data.get('first_name')
+                usr.last_name = u_form.cleaned_data.get('last_name')
+                usr.email = u_form.cleaned_data.get('email')
+                usr.save()
+                messages.success(request, '{} profile was successfully updated :)'.format(uid))
+            except Exception as e:
+                messages.error(request, str(e))
     else:
-        u_form = UserUpdateForm(instance = request.user)
-        p_form = ProfileUpdateForm(instance = request.user.profile)
+        u_form = UserUpdateForm()
         
+    context = {'u_form': u_form, 'uid': uid}
+    return render(request, 'dre_admin/profile.html', context)
 
-    context = {'u_form': u_form,'p_form': p_form}"""
-    return render(request, 'dre_admin/profile.html')
+@login_required
+def change_password(request, uid):
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            try:
+                user = form.save()
+                update_session_auth_hash(request, user)  # Important!
+                messages.success(request, 'Your password was successfully updated!')
+            except Exception as e:
+                messages.error(request, str(e))
+        else:
+            messages.error(request, 'Please correct the error above.')
+    else:
+        form = PasswordChangeForm(request.user)
+    return render(request, 'dre_admin/change_password.html', {
+        'form': form, 'uid': uid
+    })
+
+
+
+
+# REST API VIEWS...
+
+@login_required
+@api_view(['GET'])
+def GetAllUsers(request):
+    prf = Profile.objects.all().order_by('user__id')
+    serializer = ProfileSerializer(prf, many = True)
+    return Response(serializer.data)
+
+@login_required
+@api_view(['GET'])
+def GetUserByID(response, uid):
+    prf = Profile.objects.get(user__username = uid)
+    serializer = ProfileSerializer(prf, many = False)
+    return Response(serializer.data)
+

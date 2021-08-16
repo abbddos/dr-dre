@@ -13,4 +13,8 @@ class UserProfileCreationForm(ModelForm):
     class Meta:
         model = Profile
         fields = ['role']
-  
+
+class UserUpdateForm(ModelForm):
+    class Meta:
+        model = User
+        fields = ['first_name','last_name', 'email']

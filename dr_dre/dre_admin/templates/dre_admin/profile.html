@@ -1,18 +1,37 @@
-{% extends "blog/base.html"%}
+{% extends "home/base.html"%}
 {% load crispy_forms_tags%}
 {% block content %}
     <div class = "actionpage">
         <!--FORM HERE-->
-        <form method = 'POST' enctype = "multipart/form-data">
+        <form method = 'POST' enctype = "multipart/form-data", id = 'ProfileUpdateForm'>
             {% csrf_token %}
             <fieldset class = 'form-group'>
-                <legend class = 'legend-basic'>Profile Info</legend>
+                <legend class = 'legend-basic', id = "{{uid}}">{{uid}} Info</legend>
                 {{u_form|crispy}}
-                {{p_form|crispy}}
+                <small><a href = "{% url 'change_password' uid %}">Change Password...</a></small>
             </fieldset>
             <div class = 'form-group'>
                 <button class = 'btn-active' type = 'submit'>Update</button>
+                
             </div>
         </form>
     </div>
+    <div class = 'messages-container'>
+        {% if messages %}
+            {% for message in messages %}
+                <p class = "{{message.tags}}">{{message}}</p>
+            {% endfor %}
+        {% endif %}
+      </div>
+    <script>
+        $(document).ready(function(){
+            var pid = $('.legend-basic').attr('id');
+            $('#ProfileUpdateForm').attr('action', '/profile/' + pid); 
+            $.getJSON('/dre_admin/GetUserByID/' + pid, function(data){
+                $('#id_first_name').val(data.user.first_name);
+                $('#id_last_name').val(data.user.last_name);
+                $('#id_email').val(data.user.email);
+            });
+        });
+    </script>
 {% endblock %}
