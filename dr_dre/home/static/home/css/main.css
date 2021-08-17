@@ -289,3 +289,9 @@ tr:nth-child(even):hover{
   padding-left: 15px;
   color: red;
 }
+
+.warningmessage{
+  color: rgb(100,0,100);
+  font-style: italic;
+  font-weight: bold;
+}

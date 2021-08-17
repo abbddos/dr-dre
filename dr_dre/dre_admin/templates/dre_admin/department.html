@@ -1,0 +1,91 @@
+{% extends "home/base.html"%}
+{% load crispy_forms_tags%}
+{% block content %}
+    <div class = "actionpage">
+        <div class="action-header">
+            <button class = 'btn-active' id = "create-department" style = "width: 200px;">Create new Department</button>
+            <input type = "text" placeholder = "Search"id = 'srch' />
+        </div>
+        <table>
+            <tr>
+                <th>ID:</th>
+                <th>Department Name:</th>
+                <th>Department Code:</th>
+            </tr>
+            {% for d in deps %}
+            {% if d.dep_name != 'All'%}
+                <tr class = 'table-row' id = "{{d.id}}">
+                    <td>{{d.id}}</td>
+                    <td>{{d.dep_name}}</td>
+                    <td>{{d.dep_code}}</td>
+                </tr>
+            {% endif %}
+            {% endfor %}
+        </table>
+        <div class = 'messages-container'>
+            {% if messages %}
+                {% for message in messages %}
+                    <p class = "{{message.tags}}">{{message}}</p>
+                {% endfor %}
+            {% endif %}
+          </div>
+        <div id="myModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <form method = 'POST' id = "DepartmentCreationForm">
+                    {% csrf_token %}
+                    <fieldset class = 'form-group'>
+                        <legend class = 'legend-basic' id = "department-legend">Create New Department</legend>
+                        <p class = "warningmessage">Departments are linked to several other tables. Please make sure that you enter all department's information correctly before submitting them.</p>
+                        {{form|crispy}}
+                        <div class = 'form-group'>
+                            <button class = 'btn-active' type = 'submit' id = 'submission'>Submit</button>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function(){
+            $('#srch').keyup(function(){
+                search_table($(this).val());
+            });
+
+            function search_table(value){
+                $('.table-row').each(function(){
+        
+                $(this).each(function(){
+                    if($(this).text().toLocaleLowerCase().indexOf(value.toLocaleLowerCase()) >= 0){ $(this).show();}
+                    else{$(this).hide();}
+                    });
+                });
+            }
+
+            $('#create-department').click(function(){
+                $('#myModal').show();
+            });
+
+            $('.table-row').click(function(){
+                var row_id = $(this).attr('id');
+                $('#myModal').show();
+                $('#department-legend').text('View Department');
+                $('#submission').hide();
+                $.getJSON("/dre_admin/GetDepartmentByID/"+row_id, function(data){
+                    $('#id_dep_code').val(data.dep_code);
+                    $('#id_dep_name').val(data.dep_name);
+                    $('#id_dep_description').text(data.dep_description);
+                });
+            });
+
+            $('.close').click(function(){
+                $('#myModal').hide();
+                $('#department-legend').text('Create New Department');
+                $('#id_dep_code').val("All");
+                $('#id_dep_name').val("All");
+                $('#id_dep_description').text("");
+                $('#submission').show();   
+            });
+        });
+    </script>
+{% endblock %}

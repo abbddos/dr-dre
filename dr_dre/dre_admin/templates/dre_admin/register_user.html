@@ -73,29 +73,34 @@
             });
 
             $('.table-row').click(function(){
-                $('#myModal').show();
-                $('#users-legend').text('Edit user');
                 var row_id = $(this).attr('id');
-                $('#UserCreationForm').attr('action', '/dre_admin/UpdateUser/'+row_id);
+                $('#myModal').show();
+                $('#users-legend').text('Edit User');
+                $('#UserCreationForm').attr('action', "/dre_admin/UpdateUser/" + row_id);
                 $.getJSON("/dre_admin/GetUserByID/" + row_id, function(data){
                     $('#id_first_name').val(data.user.first_name);
                     $('#id_last_name').val(data.user.last_name);
                     $('#id_email').val(data.user.email);
                     $('#id_is_active').attr('checked', data.user.is_active);
-                    $('id_role').prepend("<option value = '"+data.role+"' selected hidden>"+data.role+"</option>");
+                    $('#id_role').prepend("<option value = '"+data.role+"' selected hidden>"+data.role+"</p>");
+                    $('#id_department').prepend("<option value = '"+data.department+"' selected hidden>"+data.department.dep_name+"</p>");
+                    $('#id_team').prepend("<option value = '"+data.team+"' selected hidden>"+data.team.team_name+"</p>");
                 });
             });
 
             $('.close').click(function(){
                 $('#myModal').hide();
-                $('#users-legend').text('Create new user');
-                $('#UserCreationForm').attr('action', '/dre_admin/register')
+                $('#UserCreationForm').attr('action', '/dre_admin/register/');
+                $('#users-legend').text('Create New User');
                 $('#id_first_name').val("");
-                $('#id_last_name').val("");
-                $('#id_email').val("");
-                $('#id_is_active').attr('checked', 'ture');
-                $('id_role').prepend("<option value = 'User' selected hidden>User</option>");
+                    $('#id_last_name').val("");
+                    $('#id_email').val("");
+                    $('#id_is_active').attr('checked', true);
+                    $('#id_role').prepend("<option value = 'User' selected hidden>User</p>");
+                    $('#id_department').prepend("<option value = 'All' selected hidden>All</p>");
+                    $('#id_team').prepend("<option value = 'All' selected hidden>All</p>");
             });
+
         });
     </script>
 {% endblock %}

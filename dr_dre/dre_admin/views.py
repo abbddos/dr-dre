@@ -2,14 +2,14 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from .forms import  UserRegisterForm, UserProfileCreationForm, UserUpdateForm
+from .forms import  UserRegisterForm, UserProfileCreationForm, UserUpdateForm, DepartmentCreationForm, TeamCreationForm
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
-from .models import Profile
+from .models import Profile, Department, Team
 from datetime import datetime
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .serializers import ProfileSerializer
+from .serializers import ProfileSerializer, DepartmentSerializer, TeamSerializer
 
 def NewName(newname):
     i = 1
@@ -21,6 +21,7 @@ def NewName(newname):
             i += 1
     return New_User
 
+# All routes related to user creation and update...
 def register(request):
     prf = Profile.objects.get(user__username = request.user.username)
     profiles = Profile.objects.all().order_by('user__id')
@@ -74,6 +75,8 @@ def UpdateUser(request, uid):
                 usr.is_active = form1.cleaned_data.get("is_active")
                 usr.save()
                 prf.role = form2.cleaned_data.get("role")
+                prf.department = form2.cleaned_data.get("department")
+                prf.team = form2.cleaned_data.get("team")
                 prf.save()
                 messages.success(request, 'User was successfully updated')
                 return redirect('register_user') 
@@ -81,6 +84,8 @@ def UpdateUser(request, uid):
                 messages.error(request, str(e))
                 return redirect('register_user')
     else:
+        #form1 = UserRegisterForm()
+        #form2 = UserProfileCreationForm()
         pass
     return redirect('register_user')
 
@@ -126,7 +131,56 @@ def change_password(request, uid):
     })
 
 
+@login_required
+def Departments(request):
+    prf = Profile.objects.get(user__username = request.user.username)
+    deps = Department.objects.all().order_by('id')
+    if request.method == 'POST':
+        form = DepartmentCreationForm(request.POST)
+        if form.is_valid():
+            try:
+                dep = Department(dep_code = form.cleaned_data.get('dep_code'), 
+                dep_name = form.cleaned_data.get('dep_name'),
+                dep_description = form.cleaned_data.get('dep_description'))
+                dep.save()
+                messages.success(request,'New department was successfully created :)')
+            except Exception as e:
+                messages.error(request, str(e))
+    else:
+        form = DepartmentCreationForm()
+    context = {
+        'form': form,
+        'deps': deps,
+        'prf': prf
+    }
+    return render(request, 'dre_admin/department.html', context)
 
+
+@login_required
+def Teams(request):
+    prf = Profile.objects.get(user__username = request.user.username)
+    teams = Team.objects.all().order_by('id')
+    if request.method == 'POST':
+        form = TeamCreationForm(request.POST)
+        if form.is_valid():
+            try:
+                tm = Team(team_code = form.cleaned_data.get('team_code'),
+                            team_name = form.cleaned_data.get('team_name'),
+                            team_description = form.cleaned_data.get('team_description'),
+                            team_dep = form.cleaned_data.get('team_dep'))
+                tm.save()
+                messages.success(request,'New team was successfully created :)')
+            except Exception as e:
+                messages.error(requeset, str(e))
+    else:
+        form = TeamCreationForm()
+
+    context = {
+        'prf': prf,
+        'teams': teams,
+        'form': form
+    }
+    return render(request, 'dre_admin/teams.html', context)
 
 # REST API VIEWS...
 
@@ -144,3 +198,30 @@ def GetUserByID(response, uid):
     serializer = ProfileSerializer(prf, many = False)
     return Response(serializer.data)
 
+@login_required
+@api_view(['GET'])
+def GetAllDepartments(request):
+    deps = Department.objects.all().order_by('id')
+    serializer = DepartmentSerializer(deps, many = True)
+    return Response(serializer.data)
+
+@login_required
+@api_view(['GET'])
+def GetDepartmentByID(request, did):
+    dep = Department.objects.get(id = did)
+    serializer = DepartmentSerializer(dep, many = False)
+    return Response(serializer.data)
+
+@login_required
+@api_view(['GET'])
+def GetAllTeams(request):
+    tms = Team.objects.all().order_by('id')
+    serializer = TeamSerializer(tms, many = True)
+    return Response(serializer.data)
+
+@login_required
+@api_view(['GET'])
+def GetTeamByID(request, tid):
+    tms = Team.objects.get(id = tid)
+    serializer = TeamSerializer(tms, many = False)
+    return Response(serializer.data)

@@ -17,8 +17,8 @@
             {% if prf.role == 'Admin'%}
             <li class = 'dropdown'><a href="#">Admin</a>
               <div class="dropdown-content">
-                <a href="#">Departments</a>
-                <a href="#">Teams</a>
+                <a href="{% url 'departments'%}">Departments</a>
+                <a href="{% url 'teams' %}">Teams</a>
                 <a href="{% url 'register_user'%}">Users</a>
               </div>
             </li>
