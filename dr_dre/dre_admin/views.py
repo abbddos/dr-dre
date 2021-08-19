@@ -21,6 +21,13 @@ def NewName(newname):
             i += 1
     return New_User
 
+def DepCodeIsUnique(depcode):
+    dep = Department.objects.values_list('dep_code', flat = True).all()
+    if depcode in dep:
+        return True
+    else:
+        return False
+
 # All routes related to user creation and update...
 def register(request):
     prf = Profile.objects.get(user__username = request.user.username)
@@ -139,11 +146,15 @@ def Departments(request):
         form = DepartmentCreationForm(request.POST)
         if form.is_valid():
             try:
-                dep = Department(dep_code = form.cleaned_data.get('dep_code'), 
-                dep_name = form.cleaned_data.get('dep_name'),
-                dep_description = form.cleaned_data.get('dep_description'))
-                dep.save()
-                messages.success(request,'New department was successfully created :)')
+                check_dep_code = DepCodeIsUnique(form.cleaned_data.get('dep_code'))
+                if check_dep_code:
+                    messages.error(request, 'Department code already exists')
+                else:
+                    dep = Department(dep_code = form.cleaned_data.get('dep_code'), 
+                    dep_name = form.cleaned_data.get('dep_name'),
+                    dep_description = form.cleaned_data.get('dep_description'))
+                    dep.save()
+                    messages.success(request,'New department was successfully created :)')
             except Exception as e:
                 messages.error(request, str(e))
     else:
@@ -155,7 +166,28 @@ def Departments(request):
     }
     return render(request, 'dre_admin/department.html', context)
 
-
+@login_required
+def UpdateDepartment(request, did):
+    dep = Department.objects.get(id = did)
+    if request.method == 'POST':
+        form = DepartmentCreationForm(request.POST)
+        if form.is_valid():
+            try:
+                check_dep_code = DepCodeIsUnique(form.cleaned_data.get('dep_code'))
+                if check_dep_code and form.cleaned_data.get("dep_code") != dep.dep_code:
+                    messages.error(request, 'Department code already exists')
+                else:
+                    dep.dep_code = form.cleaned_data.get("dep_code")
+                    dep.dep_name = form.cleaned_data.get("dep_name")
+                    dep.dep_description = form.cleaned_data.get("dep_description")
+                    dep.save()
+                    messages.success(request, 'Department was successfully updated :)')
+            except Exception as e:
+                messages.error(request, str(e))
+        else:
+            messages.error(request, form)
+    return redirect('departments')
+    
 @login_required
 def Teams(request):
     prf = Profile.objects.get(user__username = request.user.username)

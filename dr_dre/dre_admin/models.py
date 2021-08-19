@@ -13,19 +13,19 @@ class Profile(models.Model):
 
 
 class Department(models.Model):
-    dep_code = models.CharField(max_length = 20, unique = True, default = 'All')
+    dep_code = models.CharField(max_length = 20, unique = False, default = 'All')
     dep_name = models.CharField(max_length = 30,  default = 'All')
-    dep_description = models.TextField(null = True)
+    dep_description = models.CharField(max_length = 400, null = True)
 
     def __str__(self):
-        return f'Department_{self.dep_code}_{self.dep_name}'
+        return f'{self.dep_name}'
 
 
 class Team(models.Model):
     team_code = models.CharField(max_length = 30, unique = True, default = 'All')
     team_name = models.CharField(max_length = 40,  default = 'All')
     team_dep = models.ForeignKey('Department', on_delete = models.CASCADE, default = 1)
-    team_description = models.TextField(null = True)
+    team_description = models.CharField(max_length = 400, null = True)
 
     def __str__(self):
-        return f'Team_{self.team_code}_{self.team_name}'
+        return f'{self.team_name}'

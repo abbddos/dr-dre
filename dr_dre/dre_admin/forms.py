@@ -16,6 +16,7 @@ class UserProfileCreationForm(ModelForm):
 
 
 class DepartmentCreationForm(ModelForm):
+    
     class Meta:
         model = Department
         fields = ['dep_code', 'dep_name', 'dep_description']

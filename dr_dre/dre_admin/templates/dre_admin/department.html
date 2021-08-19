@@ -70,15 +70,17 @@
                 var row_id = $(this).attr('id');
                 $('#myModal').show();
                 $('#department-legend').text('View Department');
-                $('#submission').hide();
+                //$('#submission').hide();
+                $('#DepartmentCreationForm').attr('action', '/dre_admin/UpdateDepartment/' + row_id);
                 $.getJSON("/dre_admin/GetDepartmentByID/"+row_id, function(data){
                     $('#id_dep_code').val(data.dep_code);
                     $('#id_dep_name').val(data.dep_name);
-                    $('#id_dep_description').text(data.dep_description);
+                    $('#id_dep_description').val(data.dep_description);
                 });
             });
 
             $('.close').click(function(){
+                $('#DepartmentCreationForm').attr('action', '/dre_admin/departments/');
                 $('#myModal').hide();
                 $('#department-legend').text('Create New Department');
                 $('#id_dep_code').val("All");

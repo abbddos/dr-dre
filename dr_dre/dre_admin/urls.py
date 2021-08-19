@@ -9,6 +9,7 @@ urlpatterns = [
     path('UpdateUser/<uid>', views.UpdateUser, name = 'UpdateUser'),
     path('GetAllDepartments/', views.GetAllDepartments, name = 'GetAllDepartments'),
     path('GetDepartmentByID/<did>/', views.GetDepartmentByID, name = 'GetDepartmentByID'),
+    path('UpdateDepartment/<did>', views.UpdateDepartment, name = 'UpdateDepartment'),
     path('teams', views.Teams, name = 'teams'),
     path('GetAllTeams', views.GetAllTeams, name = 'GetAllTeams'),
     path('GetTeamByID/<tid>', views.GetTeamByID, name = 'GetTeamByID')
