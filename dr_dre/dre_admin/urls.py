@@ -12,5 +12,6 @@ urlpatterns = [
     path('UpdateDepartment/<did>', views.UpdateDepartment, name = 'UpdateDepartment'),
     path('teams', views.Teams, name = 'teams'),
     path('GetAllTeams', views.GetAllTeams, name = 'GetAllTeams'),
-    path('GetTeamByID/<tid>', views.GetTeamByID, name = 'GetTeamByID')
+    path('GetTeamByID/<tid>', views.GetTeamByID, name = 'GetTeamByID'),
+    path('UpdateTeam/<tid>', views.UpdateTeam, name = 'UpdateTeam')
 ]

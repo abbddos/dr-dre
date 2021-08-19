@@ -36,7 +36,6 @@
                     {% csrf_token %}
                     <fieldset class = 'form-group'>
                         <legend class = 'legend-basic' id = "department-legend">Create New Department</legend>
-                        <p class = "warningmessage">Departments are linked to several other tables. Please make sure that you enter all department's information correctly before submitting them.</p>
                         {{form|crispy}}
                         <div class = 'form-group'>
                             <button class = 'btn-active' type = 'submit' id = 'submission'>Submit</button>
@@ -70,7 +69,6 @@
                 var row_id = $(this).attr('id');
                 $('#myModal').show();
                 $('#department-legend').text('View Department');
-                //$('#submission').hide();
                 $('#DepartmentCreationForm').attr('action', '/dre_admin/UpdateDepartment/' + row_id);
                 $.getJSON("/dre_admin/GetDepartmentByID/"+row_id, function(data){
                     $('#id_dep_code').val(data.dep_code);
@@ -85,8 +83,7 @@
                 $('#department-legend').text('Create New Department');
                 $('#id_dep_code').val("All");
                 $('#id_dep_name').val("All");
-                $('#id_dep_description').text("");
-                $('#submission').show();   
+                $('#id_dep_description').text("");  
             });
         });
     </script>

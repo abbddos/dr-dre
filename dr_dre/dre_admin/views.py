@@ -28,6 +28,13 @@ def DepCodeIsUnique(depcode):
     else:
         return False
 
+def TeamCodeIsUnique(tmcode):
+    tm = Team.objects.values_list('team_code', flat = True).all()
+    if tmcode in tm:
+        return True
+    else:
+        return False
+
 # All routes related to user creation and update...
 def register(request):
     prf = Profile.objects.get(user__username = request.user.username)
@@ -49,7 +56,7 @@ def register(request):
                             email = email, is_active = isactive, date_joined = datetime.now())
                 usr.set_password(password)
                 usr.save()
-                pro = Profile(user = usr, role = form2.cleaned_data.get('role'))
+                pro = Profile(user = usr, role = form2.cleaned_data.get('role'), department = form2.cleaned_data.get('department'), team = form2.cleaned_data.get('team'))
                 pro.save()
                 messages.success(request, 'New user was successfully added :)')
                 return redirect('register_user')
@@ -213,6 +220,27 @@ def Teams(request):
         'form': form
     }
     return render(request, 'dre_admin/teams.html', context)
+
+@login_required
+def UpdateTeam(request, tid):
+    tm = Team.objects.get(id = tid)
+    if request.method == 'POST':
+        form = TeamCreationForm(request.POST)
+        if form.is_valid():
+            try:
+                check_team_code = TeamCodeIsUnique(form.cleaned_data.get('team_code'))
+                if check_team_code and form.cleaned_data.get('team_code') != tm.team_code:
+                    messages.error(request, 'Team code already exists')
+                else:
+                    tm.team_code = form.cleaned_data.get('team_code')
+                    tm.team_name = form.cleaned_data.get('team_name')
+                    tm.team_description = form.cleaned_data.get('team_description')
+                    tm.team_dep = form.cleaned_data.get('team_dep')
+                    tm.save()
+                    messages.success(request, 'Team was successfully updated:)') 
+            except Exception as e:
+                messages.error(request, str(e))
+    return redirect('teams')
 
 # REST API VIEWS...
 

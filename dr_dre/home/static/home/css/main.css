@@ -281,6 +281,8 @@ tr:nth-child(even):hover{
   padding: 3px;
   padding-left: 15px;
   color: blue;
+  font-style: italic;
+  font-weight: bold;
 }
 
 .error{
@@ -288,10 +290,6 @@ tr:nth-child(even):hover{
   padding: 3px;
   padding-left: 15px;
   color: red;
-}
-
-.warningmessage{
-  color: rgb(100,0,100);
   font-style: italic;
   font-weight: bold;
 }

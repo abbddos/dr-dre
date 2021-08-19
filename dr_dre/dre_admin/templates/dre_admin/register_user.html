@@ -15,6 +15,8 @@
                 <th>Email:</th>
                 <th>Active:</th>
                 <th>Role:</th>
+                <th>Department:</th>
+                <th>Team:</th>
             </tr>
             {% for p in profiles %}
                 <tr class = '{{p.user.is_active}} table-row' id = "{{p.user.username}}">
@@ -25,6 +27,8 @@
                     <td>{{p.user.email}}</td>
                     <td>{{p.user.is_active}}</td>
                     <td>{{p.role}}</td>
+                    <td>{{p.department}}</td>
+                    <td>{{p.team}}</td>
                 </tr>
             {% endfor %}
         </table>
@@ -97,8 +101,8 @@
                     $('#id_email').val("");
                     $('#id_is_active').attr('checked', true);
                     $('#id_role').prepend("<option value = 'User' selected hidden>User</option>");
-                    $('#id_department').prepend("<option value = 'All' selected hidden>All</option>");
-                    $('#id_team').prepend("<option value = 'All' selected hidden>All</option>");
+                    $('#id_department').prepend("<option value = '1' selected hidden>All</option>");
+                    $('#id_team').prepend("<option value = '1' selected hidden>All</option>");
             });
 
         });

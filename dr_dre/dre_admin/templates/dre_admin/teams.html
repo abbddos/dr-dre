@@ -40,7 +40,6 @@
                     {% csrf_token %}
                     <fieldset class = 'form-group'>
                         <legend class = 'legend-basic' id = "team-legend">Create New Team</legend>
-                        <p class = "warningmessage">Teams are linked to several other tables. Please make sure that you enter all team's information correctly before submitting them.</p>
                         {{form|crispy}}
                         <div class = 'form-group'>
                             <button class = 'btn-active' type = 'submit' id = 'submission'>Submit</button>
@@ -74,22 +73,23 @@
                 var row_id = $(this).attr('id');
                 $('#myModal').show();
                 $('#team-legend').text('View Team');
-                $('#submission').hide();
+                $('#TeamCreationForm').attr('action', '/dre_admin/UpdateTeam/' + row_id);
                 $.getJSON("/dre_admin/GetTeamByID/"+row_id, function(data){
                     $('#id_team_code').val(data.team_code);
                     $('#id_team_name').val(data.team_name);
-                    $('#id_team_dep').prepend("<option value = '"+data.team_dep+"' selected hidden>"+data.team_dep.dep_name+"</p>");
-                    $('#id_team_description').text(data.team_description);
+                    $('#id_team_dep').prepend("<option value = '"+data.team_dep.id+"' selected hidden>"+data.team_dep.dep_name+"</option>");
+                    $('#id_team_description').val(data.team_description);
                 });
             });
 
             $('.close').click(function(){
                 $('#myModal').hide();
+                $('#TeamCreationForm').attr('action', '/dre_admin/teams');
                 $('#team-legend').text('Create New Team');
                 $('#id_team_code').val("All");
                 $('#id_team_name').val("All");
                 $('#id_team_description').text("");
-                $('#submission').show();   
+                $('#id_team_dep').prepend("<option value = '1' selected hidden>All</option>");  
             });
         });
     </script>

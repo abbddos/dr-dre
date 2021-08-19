@@ -22,7 +22,7 @@ class Department(models.Model):
 
 
 class Team(models.Model):
-    team_code = models.CharField(max_length = 30, unique = True, default = 'All')
+    team_code = models.CharField(max_length = 30, default = 'All')
     team_name = models.CharField(max_length = 40,  default = 'All')
     team_dep = models.ForeignKey('Department', on_delete = models.CASCADE, default = 1)
     team_description = models.CharField(max_length = 400, null = True)
