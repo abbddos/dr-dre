@@ -120,31 +120,8 @@ def UpdateJob(request, jid):
 
 @login_required
 def GetJobsData(request):
-    df = pd.read_json('http://localhost:8000/dre_jobs/GetAllJobs/')
-    df1 = pd.DataFrame()
-    df1['id'] = df.id
-    df1['Code'] = df.code
-    df1['Description'] = df.description
-    df1['Start Date'] = df.start_date
-    df1['End Date'] = df.end_date
-    df1['Status'] = df.status
-
-    deps = []
-    tems = []
-    cust = []
-    ride = []
-
-    for i in range(len(df)):
-        deps.append(df['department'][i]['dep_name'])
-        tems.append(df['team'][i]['team_name'])
-        cust.append(df['customer'][i]['name'])
-        ride.append(df['customer'][i]['ride'])
-
-    df1['Department'] = deps
-    df1['Team'] = tems
-    df1['Customer'] = cust
-    df1['Ride'] = ride
-    file = df1.to_csv()
+    df = pd.DataFrame(list(Job.objects.all().order_by('id').values()))
+    file = df.to_csv()
     response = FileResponse(file)
     response['Content-type'] = 'text/csv'
     response['Content-Disposition'] = 'attachment; filename= Jobs_data.csv'
@@ -166,7 +143,7 @@ def GetCustomerByID(request, cid):
     serializer = CustomerSerializer(cstmr, many = False)
     return Response(serializer.data)
 
-#@login_required
+@login_required
 @api_view(['GET'])
 def GetAllJobs(request):
     jobs = Job.objects.all().order_by('id')
