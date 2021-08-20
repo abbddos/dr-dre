@@ -9,5 +9,6 @@ urlpatterns = [
     path('jobs/', views.Jobs, name = 'jobs'),
     path('UpdateJob/<jid>', views.UpdateJob, name = 'UpdateJob'),
     path('GetAllJobs/', views.GetAllJobs, name = 'GetAllJobs'),
-    path('GetJobByID/<jid>', views.GetJobByID, name = 'GetJobByID')
+    path('GetJobByID/<jid>', views.GetJobByID, name = 'GetJobByID'),
+    path('GetJobsData/', views.GetJobsData, name = 'GetJobsData')
 ]

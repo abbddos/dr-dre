@@ -5,6 +5,7 @@
         <div class="action-header">
             {% if prf.role != 'User' %}
             <button class = 'btn-active' id = "create-job" style = "width: 200px;">Create New Job</button>
+            <a href = "{% url 'GetJobsData'%}" class = 'btn-download'>Download data</a>
             {% endif %}
             <input type = "text" placeholder = "Search"id = 'srch' />
             <input type = "text" id = "U_ROLE" value = "{{prf.role}}" hidden />
