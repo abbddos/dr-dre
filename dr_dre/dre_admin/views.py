@@ -285,3 +285,5 @@ def GetTeamByID(request, tid):
     tms = Team.objects.get(id = tid)
     serializer = TeamSerializer(tms, many = False)
     return Response(serializer.data)
+
+

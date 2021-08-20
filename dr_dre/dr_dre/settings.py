@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'login.apps.LoginConfig',
     'home.apps.HomeConfig',
     'dre_admin.apps.DreAdminConfig',
+    'dre_jobs.apps.DreJobsConfig',
     'crispy_forms',
     'rest_framework',
     'django.contrib.auth',
