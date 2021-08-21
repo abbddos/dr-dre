@@ -3,11 +3,13 @@
 {% block content %}
     <div class = "actionpage">
         <!--FORM HERE-->
-        <form method = 'POST' enctype = "multipart/form-data", id = 'ProfileUpdateForm'>
+        <form method = 'POST' enctype = "multipart/form-data", id = 'ProfileUpdateForm' style = "width: 50%;">
             {% csrf_token %}
             <fieldset class = 'form-group'>
                 <legend class = 'legend-basic', id = "{{uid}}">{{uid}} Info</legend>
                 {{u_form|crispy}}
+                <label>Department: <p id = 'department'></p></label>
+                <label>Team:<p id = 'team'></p></label>
                 <small><a href = "{% url 'change_password' uid %}">Change Password...</a></small>
             </fieldset>
             <div class = 'form-group'>
@@ -31,6 +33,8 @@
                 $('#id_first_name').val(data.user.first_name);
                 $('#id_last_name').val(data.user.last_name);
                 $('#id_email').val(data.user.email);
+                $('#department').text(data.department.dep_name);
+                $('#team').text(data.team.team_name);
             });
         });
     </script>

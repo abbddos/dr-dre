@@ -51,7 +51,7 @@
                 <form method = 'POST' id = "JOBCreationForm">
                     {% csrf_token %}
                     <fieldset class = 'form-group'>
-                        <legend class = 'legend-basic' id = "job-legend">Create New Customer</legend>
+                        <legend class = 'legend-basic' id = "job-legend">Create New Job</legend>
                         {{form|crispy}}
                         <div class = 'form-group'>
                             <button class = 'btn-active' type = 'submit' id = 'submission'>Submit</button>
